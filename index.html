@@ -1,12 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Using_Web_Notifications</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<title>Using Web Notifications</title>
 </head>
 <body>
-	<h2>Using_Web_Notifications</h2>
-	<button class="btn btn-success">send notifications</button>
+	<div class="container">
+		<div class="h2 text-center" style="margin-top: 20px;">Using Web Notifications</div>
+		<div class="d-flex justify-content-center">
+			<div class="p-2">
+				<button class="btn btn-success">Notify me!</button>
+			</div>
+		</div>
+		<p>Click the button above,then it will send two notifications every five seconds in the lower right corner. <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/notification/Using_Web_Notifications" target="_blank">MDN source</a></p>
+		<b>The following scripts:</b>
+		<pre class="p-3 mb-2 bg-dark text-white">
+			<code>
+window.addEventListener('load', function () {
+  	if (window.Notification && Notification.permission !== "granted") {
+	    Notification.requestPermission(function (status) {
+	      	if (Notification.permission !== status) {
+	        	Notification.permission = status;
+	      	}
+	    });
+  	}
+  	var button = document.getElementsByTagName('button')[0];
+
+  	button.addEventListener('click', function () {
+	    // 如果用户同意就创建一个通知
+	    if (window.Notification && Notification.permission === "granted") {
+	    	var j = 0;
+	    	setInterval(function(){
+		      	for (let i = 0; i < 2; i++,j++) {
+		            // Thanks to the tag, we should only see the "Hi! 9" notification
+		            let n = new Notification("Hi! " + j);
+		            n.onshow = function () { 
+					  	setTimeout(n.close.bind(n), 2000); 
+					}
+	          	}
+	        },5000);
+	    }
+
+	    // 如果用户没有选择是否显示通知
+	    // 注：因为在 Chrome 中我们无法确定 permission 属性是否有值，因此
+	    // 检查该属性的值是否是 "default" 是不安全的。
+	    else if (window.Notification && Notification.permission !== "denied") {
+	      	Notification.requestPermission(function (status) {
+		        if (Notification.permission !== status) {
+		          	Notification.permission = status;
+		        }
+
+		        // 如果用户同意了
+		        if (status === "granted") {
+		        	for (var i = 0; i < 10; i++) {
+			            // Thanks to the tag, we should only see the "Hi! 9" notification
+			            var n = new Notification("Hi! " + i, {tag: 'soManyNotification'});
+			            n.onshow = function () { 
+						  	setTimeout(n.close.bind(n), 5000); 
+						}
+		          	}
+		        }
+
+		        // 否则，我们可以让步的使用常规模态的 alert
+		        else {
+	         	 	alert("Hi!");
+		        }
+	      	});
+	    }
+
+	    // 如果用户拒绝接受通知
+	    else {
+	      	// 我们可以让步的使用常规模态的 alert
+	      	alert("Hi!");
+	    }
+  	});
+});
+			</code>
+		</pre>
+	</div>
 </body>
 <script>
 	window.addEventListener('load', function () {
