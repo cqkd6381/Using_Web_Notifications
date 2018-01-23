@@ -12,6 +12,7 @@
 		<div class="d-flex justify-content-center">
 			<div class="p-2">
 				<button class="btn btn-success">Notify me!</button>
+				<button class="btn btn-info notification-status">Get Status</button>
 			</div>
 		</div>
 		<p>Click the button above,then it will send 3 notifications every five seconds in the lower right corner. <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/notification/Using_Web_Notifications" target="_blank">MDN source</a> | <a href="https://w3c-html-ig-zh.github.io/notifications/whatwg/" target="_blank">Expand source</a></p>
@@ -19,14 +20,31 @@
 		<pre class="p-3 mb-2 bg-dark text-white">
 			<code>
 window.addEventListener('load', function () {
+	var s = $(".notification-status");
+	var button = document.getElementsByTagName('button')[0];
+	if(window.Notification && Notification.permission === "granted"){
+  		s.text('Granted');
+	}else if(Notification.permission === "default"){
+  		s.text('Default');
+	}else{
+		s.text('Denied');
+	}
+
   	if (window.Notification && Notification.permission !== "granted") {
-	    Notification.requestPermission(function (status) {
-	      	if (Notification.permission !== status) {
-	        	Notification.permission = status;
+	    Notification.requestPermission().then(function(status) {
+	    	//下面这一句不理解，明明是只读属性，为何要设置它呢？
+	      	// if (Notification.permission !== status) {
+	       //  	Notification.permission = status;
+	      	// }
+	      	if(status === 'granted'){
+	      		s.text('Granted');
+	      	}else if(status === 'default'){
+	      		s.text('Denied');
+	      	}else if(status === 'denied'){
+	      		s.text('Denied');
 	      	}
 	    });
   	}
-  	var button = document.getElementsByTagName('button')[0];
 
   	button.addEventListener('click', function () {
 	    // 如果用户同意就创建一个通知
@@ -38,7 +56,7 @@ window.addEventListener('load', function () {
 		            let options = {
 		            	body:'This is the body!',
 		            	icon:'https://lorempixel.com/200/200/people/?68317',
-		            	// image:'https://lorempixel.com/500/400/sports/?36093',
+		            	// requireInteraction: true,
 		            	data:{
 		            		location_url:'https://lorempixel.com/200/200/people/?68317'
 		            	}
@@ -67,23 +85,29 @@ window.addEventListener('load', function () {
 	    // 注：因为在 Chrome 中我们无法确定 permission 属性是否有值，因此
 	    // 检查该属性的值是否是 "default" 是不安全的。
 	    else if (window.Notification && Notification.permission !== "denied") {
-	      	Notification.requestPermission(function (status) {
-		        if (Notification.permission !== status) {
-		          	Notification.permission = status;
-		        }
+	      	Notification.requestPermission().then(function(status) {
+		        // if (Notification.permission !== status) {
+		        //   	Notification.permission = status;
+		        // }
+		        if(status === 'default'){
+		      		s.text('Denied');
+		      	}else if(status === 'denied'){
+		      		s.text('Denied');
+		      	}
 
 		        // 如果用户同意了
 		        if (status === "granted") {
+		        	s.text('Granted');
 			    	setInterval(function(){
 				      	for (let i = 0; i < 3; i++,j++) {
-				            // Thanks to the tag, we should only see the "Hi! 9" notification
 				            let options = {
 				            	body:'This is the body!',
 				            	icon:'https://lorempixel.com/200/200/people/?68317',
-				            	// image:'https://lorempixel.com/500/400/sports/?36093',
+				            	// requireInteraction: true,
 				            	data:{
 				            		location_url:'https://lorempixel.com/200/200/people/?68317'
-				            	}
+				            	},
+				            	tag:'Notification_tag'
 
 				            };
 				            let n = new Notification("Hi! " + j,options);
@@ -92,7 +116,7 @@ window.addEventListener('load', function () {
 							};
 							n.onclick = function () {
 								// event.preventDefault(); // prevent the browser from focusing the Notification's tab
-	  							window.open(options.data.location_url, '_blank');
+	  							window.open(n.data.location_url, '_blank');
 							};
 							n.addEventListener('error', function(errorMsg) {
 						     	console.log('something went wrong:');
@@ -116,20 +140,60 @@ window.addEventListener('load', function () {
 	    }
   	});
 });
+$(function(){
+	$('.notification-status').click(function(){
+		var t = $(this);
+		console.log(t.text());
+		Notification.requestPermission().then(function(status) {
+		  	if (status === 'denied') {
+	  			t.text('Denied');
+			    return;
+		  	}
+		  	if (status === 'default') {
+		  		t.text('Default');
+			    return;
+		  	}
+		  	// Do something with the granted permission.
+		  	if (status === 'granted') {
+		  		t.text('Granted');
+			    return;
+		  	}
+			
+		});
+	});
+});
 			</code>
 		</pre>
 	</div>
 </body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script>
 	window.addEventListener('load', function () {
+		var s = $(".notification-status");
+		var button = document.getElementsByTagName('button')[0];
+		if(window.Notification && Notification.permission === "granted"){
+      		s.text('Granted');
+		}else if(Notification.permission === "default"){
+      		s.text('Default');
+		}else{
+			s.text('Denied');
+		}
+
 	  	if (window.Notification && Notification.permission !== "granted") {
-		    Notification.requestPermission(function (status) {
-		      	if (Notification.permission !== status) {
-		        	Notification.permission = status;
+		    Notification.requestPermission().then(function(status) {
+		    	//下面这一句不理解，明明是只读属性，为何要设置它呢？
+		      	// if (Notification.permission !== status) {
+		       //  	Notification.permission = status;
+		      	// }
+		      	if(status === 'granted'){
+		      		s.text('Granted');
+		      	}else if(status === 'default'){
+		      		s.text('Denied');
+		      	}else if(status === 'denied'){
+		      		s.text('Denied');
 		      	}
 		    });
 	  	}
-	  	var button = document.getElementsByTagName('button')[0];
 
 	  	button.addEventListener('click', function () {
 		    // 如果用户同意就创建一个通知
@@ -141,7 +205,7 @@ window.addEventListener('load', function () {
 			            let options = {
 			            	body:'This is the body!',
 			            	icon:'https://lorempixel.com/200/200/people/?68317',
-			            	// image:'https://lorempixel.com/500/400/sports/?36093',
+			            	// requireInteraction: true,
 			            	data:{
 			            		location_url:'https://lorempixel.com/200/200/people/?68317'
 			            	}
@@ -170,19 +234,25 @@ window.addEventListener('load', function () {
 		    // 注：因为在 Chrome 中我们无法确定 permission 属性是否有值，因此
 		    // 检查该属性的值是否是 "default" 是不安全的。
 		    else if (window.Notification && Notification.permission !== "denied") {
-		      	Notification.requestPermission(function (status) {
-			        if (Notification.permission !== status) {
-			          	Notification.permission = status;
-			        }
+		      	Notification.requestPermission().then(function(status) {
+			        // if (Notification.permission !== status) {
+			        //   	Notification.permission = status;
+			        // }
+			        if(status === 'default'){
+			      		s.text('Denied');
+			      	}else if(status === 'denied'){
+			      		s.text('Denied');
+			      	}
 
 			        // 如果用户同意了
 			        if (status === "granted") {
+			        	s.text('Granted');
 				    	setInterval(function(){
 					      	for (let i = 0; i < 3; i++,j++) {
-					            // Thanks to the tag, we should only see the "Hi! 9" notification
 					            let options = {
 					            	body:'This is the body!',
 					            	icon:'https://lorempixel.com/200/200/people/?68317',
+					            	// requireInteraction: true,
 					            	data:{
 					            		location_url:'https://lorempixel.com/200/200/people/?68317'
 					            	},
@@ -195,7 +265,7 @@ window.addEventListener('load', function () {
 								};
 								n.onclick = function () {
 									// event.preventDefault(); // prevent the browser from focusing the Notification's tab
-		  							window.open(options.data.location_url, '_blank');
+		  							window.open(n.data.location_url, '_blank');
 								};
 								n.addEventListener('error', function(errorMsg) {
 							     	console.log('something went wrong:');
@@ -218,6 +288,28 @@ window.addEventListener('load', function () {
 		      	alert("It was denied!");
 		    }
 	  	});
+	});
+	$(function(){
+		$('.notification-status').click(function(){
+			var t = $(this);
+			console.log(t.text());
+			Notification.requestPermission().then(function(status) {
+			  	if (status === 'denied') {
+		  			t.text('Denied');
+				    return;
+			  	}
+			  	if (status === 'default') {
+			  		t.text('Default');
+				    return;
+			  	}
+			  	// Do something with the granted permission.
+			  	if (status === 'granted') {
+			  		t.text('Granted');
+				    return;
+			  	}
+				
+			});
+		});
 	});
 </script>
 </html>
