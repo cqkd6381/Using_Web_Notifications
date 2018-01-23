@@ -99,7 +99,11 @@ window.addEventListener('load', function () {
 		    	setInterval(function(){
 			      	for (let i = 0; i < 3; i++,j++) {
 			            // Thanks to the tag, we should only see the "Hi! 9" notification
-			            let n = new Notification("Hi! " + j);
+			            var options = {
+			            	body:'This is the body!',
+			            	icon:'https://lorempixel.com/200/200/people/?68317'
+			            };
+			            let n = new Notification("Hi! " + j,options);
 			            n.onshow = function () { 
 						  	setTimeout(n.close.bind(n), 2000); 
 						}
