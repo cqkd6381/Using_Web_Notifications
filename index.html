@@ -30,15 +30,35 @@ window.addEventListener('load', function () {
 
   	button.addEventListener('click', function () {
 	    // 如果用户同意就创建一个通知
+    	var j = 0;
 	    if (window.Notification && Notification.permission === "granted") {
-	    	var j = 0;
 	    	setInterval(function(){
 		      	for (let i = 0; i < 3; i++,j++) {
 		            // Thanks to the tag, we should only see the "Hi! 9" notification
-		            let n = new Notification("Hi! " + j);
+		            let options = {
+		            	body:'This is the body!',
+		            	icon:'https://lorempixel.com/200/200/people/?68317',
+		            	// image:'https://lorempixel.com/500/400/sports/?36093',
+		            	data:{
+		            		location_url:'https://lorempixel.com/200/200/people/?68317'
+		            	}
+
+		            };
+		            let n = new Notification("Hi! " + j,options);
 		            n.onshow = function () { 
 					  	setTimeout(n.close.bind(n), 2000); 
-					}
+					};
+					n.onclick = function () {
+						// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+							window.open(options.data.location_url, '_blank');
+					};
+					n.addEventListener('error', function(errorMsg) {
+				     	console.log('something went wrong:');
+					    console.log(errorMsg);
+				  	});
+					// n.onerror = function (errorMsg) {
+					// 	console.log(errorMsg);
+					// };
 	          	}
 	        },5000);
 	    }
@@ -54,18 +74,37 @@ window.addEventListener('load', function () {
 
 		        // 如果用户同意了
 		        if (status === "granted") {
-		        	for (var i = 0; i < 10; i++) {
-			            // Thanks to the tag, we should only see the "Hi! 9" notification
-			            var n = new Notification("Hi! " + i, {tag: 'soManyNotification'});
-			            n.onshow = function () { 
-						  	setTimeout(n.close.bind(n), 5000); 
-						}
-		          	}
+			    	setInterval(function(){
+				      	for (let i = 0; i < 3; i++,j++) {
+				            // Thanks to the tag, we should only see the "Hi! 9" notification
+				            let options = {
+				            	body:'This is the body!',
+				            	icon:'https://lorempixel.com/200/200/people/?68317',
+				            	// image:'https://lorempixel.com/500/400/sports/?36093',
+				            	data:{
+				            		location_url:'https://lorempixel.com/200/200/people/?68317'
+				            	}
+
+				            };
+				            let n = new Notification("Hi! " + j,options);
+				            n.onshow = function () { 
+							  	setTimeout(n.close.bind(n), 2000); 
+							};
+							n.onclick = function () {
+								// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+	  							window.open(options.data.location_url, '_blank');
+							};
+							n.addEventListener('error', function(errorMsg) {
+						     	console.log('something went wrong:');
+							    console.log(errorMsg);
+						  	});
+			          	}
+			        },5000);
 		        }
 
 		        // 否则，我们可以让步的使用常规模态的 alert
 		        else {
-	         	 	alert("Hi!");
+	         	 	alert("It was denied!");
 		        }
 	      	});
 	    }
@@ -73,7 +112,7 @@ window.addEventListener('load', function () {
 	    // 如果用户拒绝接受通知
 	    else {
 	      	// 我们可以让步的使用常规模态的 alert
-	      	alert("Hi!");
+	      	alert("It was denied!");
 	    }
   	});
 });
@@ -99,14 +138,30 @@ window.addEventListener('load', function () {
 		    	setInterval(function(){
 			      	for (let i = 0; i < 3; i++,j++) {
 			            // Thanks to the tag, we should only see the "Hi! 9" notification
-			            var options = {
+			            let options = {
 			            	body:'This is the body!',
-			            	icon:'https://lorempixel.com/200/200/people/?68317'
+			            	icon:'https://lorempixel.com/200/200/people/?68317',
+			            	// image:'https://lorempixel.com/500/400/sports/?36093',
+			            	data:{
+			            		location_url:'https://lorempixel.com/200/200/people/?68317'
+			            	}
+
 			            };
 			            let n = new Notification("Hi! " + j,options);
 			            n.onshow = function () { 
 						  	setTimeout(n.close.bind(n), 2000); 
-						}
+						};
+						n.onclick = function () {
+							// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+  							window.open(options.data.location_url, '_blank');
+						};
+						n.addEventListener('error', function(errorMsg) {
+					     	console.log('something went wrong:');
+						    console.log(errorMsg);
+					  	});
+						// n.onerror = function (errorMsg) {
+						// 	console.log(errorMsg);
+						// };
 		          	}
 		        },5000);
 		    }
@@ -125,17 +180,34 @@ window.addEventListener('load', function () {
 				    	setInterval(function(){
 					      	for (let i = 0; i < 3; i++,j++) {
 					            // Thanks to the tag, we should only see the "Hi! 9" notification
-					            let n = new Notification("Hi! " + j, {tag: 'soManyNotification'});
+					            let options = {
+					            	body:'This is the body!',
+					            	icon:'https://lorempixel.com/200/200/people/?68317',
+					            	// image:'https://lorempixel.com/500/400/sports/?36093',
+					            	data:{
+					            		location_url:'https://lorempixel.com/200/200/people/?68317'
+					            	}
+
+					            };
+					            let n = new Notification("Hi! " + j,options);
 					            n.onshow = function () { 
 								  	setTimeout(n.close.bind(n), 2000); 
-								}
+								};
+								n.onclick = function () {
+									// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+		  							window.open(options.data.location_url, '_blank');
+								};
+								n.addEventListener('error', function(errorMsg) {
+							     	console.log('something went wrong:');
+								    console.log(errorMsg);
+							  	});
 				          	}
 				        },5000);
 			        }
 
 			        // 否则，我们可以让步的使用常规模态的 alert
 			        else {
-		         	 	alert("Hi!");
+		         	 	alert("It was denied!");
 			        }
 		      	});
 		    }
@@ -143,7 +215,7 @@ window.addEventListener('load', function () {
 		    // 如果用户拒绝接受通知
 		    else {
 		      	// 我们可以让步的使用常规模态的 alert
-		      	alert("Hi!");
+		      	alert("It was denied!");
 		    }
 	  	});
 	});
