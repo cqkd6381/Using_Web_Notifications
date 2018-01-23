@@ -23,18 +23,18 @@ window.addEventListener('load', function () {
 	var s = $(".notification-status");
 	var button = document.getElementsByTagName('button')[0];
 	if(window.Notification && Notification.permission === "granted"){
-  		s.text('Granted');
+		s.text('Granted');
 	}else if(Notification.permission === "default"){
-  		s.text('Default');
+		s.text('Default');
 	}else{
 		s.text('Denied');
 	}
 
-  	if (window.Notification && Notification.permission !== "granted") {
+	if (window.Notification && Notification.permission !== "granted") {
 	    Notification.requestPermission().then(function(status) {
 	    	//下面这一句不理解，明明是只读属性，为何要设置它呢？
 	      	// if (Notification.permission !== status) {
-	       //  	Notification.permission = status;
+	        //    Notification.permission = status;
 	      	// }
 	      	if(status === 'granted'){
 	      		s.text('Granted');
@@ -44,11 +44,11 @@ window.addEventListener('load', function () {
 	      		s.text('Denied');
 	      	}
 	    });
-  	}
+	}
 
-  	button.addEventListener('click', function () {
+	button.addEventListener('click', function () {
 	    // 如果用户同意就创建一个通知
-    	var j = 0;
+		var j = 0;
 	    if (window.Notification && Notification.permission === "granted") {
 	    	setInterval(function(){
 		      	for (let i = 0; i < 3; i++,j++) {
@@ -60,23 +60,21 @@ window.addEventListener('load', function () {
 		            	data:{
 		            		location_url:'https://lorempixel.com/200/200/people/?68317'
 		            	}
-
 		            };
 		            let n = new Notification("Hi! " + j,options);
 		            n.onshow = function () { 
 					  	setTimeout(n.close.bind(n), 2000); 
 					};
 					n.onclick = function () {
-						// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+						event.preventDefault(); // prevent the browser from focusing the Notification's tab
 							window.open(options.data.location_url, '_blank');
 					};
+					n.onclose = function () {
+						console.log(n.title,"closed");
+					};
 					n.addEventListener('error', function(errorMsg) {
-				     	console.log('something went wrong:');
-					    console.log(errorMsg);
+				     	console.log('something went wrong:'+errorMsg);
 				  	});
-					// n.onerror = function (errorMsg) {
-					// 	console.log(errorMsg);
-					// };
 	          	}
 	        },5000);
 	    }
@@ -108,20 +106,21 @@ window.addEventListener('load', function () {
 				            		location_url:'https://lorempixel.com/200/200/people/?68317'
 				            	},
 				            	tag:'Notification_tag'
-
 				            };
 				            let n = new Notification("Hi! " + j,options);
 				            n.onshow = function () { 
 							  	setTimeout(n.close.bind(n), 2000); 
 							};
 							n.onclick = function () {
-								// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+								event.preventDefault(); // prevent the browser from focusing the Notification's tab
 	  							window.open(n.data.location_url, '_blank');
 							};
-							n.addEventListener('error', function(errorMsg) {
-						     	console.log('something went wrong:');
-							    console.log(errorMsg);
-						  	});
+							n.onclose = function () {
+								console.log(n.title,"closed");
+							};
+							n.onerror = function (errorMsg) {
+								console.log('something went wrong:'+errorMsg);
+							};
 			          	}
 			        },5000);
 		        }
@@ -138,7 +137,7 @@ window.addEventListener('load', function () {
 	      	// 我们可以让步的使用常规模态的 alert
 	      	alert("It was denied!");
 	    }
-  	});
+	});
 });
 $(function(){
 	$('.notification-status').click(function(){
@@ -216,16 +215,15 @@ $(function(){
 						  	setTimeout(n.close.bind(n), 2000); 
 						};
 						n.onclick = function () {
-							// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+							event.preventDefault(); // prevent the browser from focusing the Notification's tab
   							window.open(options.data.location_url, '_blank');
 						};
+						n.onclose = function () {
+							console.log(n.title,"closed");
+						};
 						n.addEventListener('error', function(errorMsg) {
-					     	console.log('something went wrong:');
-						    console.log(errorMsg);
+					     	console.log('something went wrong:'+errorMsg);
 					  	});
-						// n.onerror = function (errorMsg) {
-						// 	console.log(errorMsg);
-						// };
 		          	}
 		        },5000);
 		    }
@@ -264,13 +262,15 @@ $(function(){
 								  	setTimeout(n.close.bind(n), 2000); 
 								};
 								n.onclick = function () {
-									// event.preventDefault(); // prevent the browser from focusing the Notification's tab
+									event.preventDefault(); // prevent the browser from focusing the Notification's tab
 		  							window.open(n.data.location_url, '_blank');
 								};
-								n.addEventListener('error', function(errorMsg) {
-							     	console.log('something went wrong:');
-								    console.log(errorMsg);
-							  	});
+								n.onclose = function () {
+									console.log(n.title,"closed");
+								};
+								n.onerror = function (errorMsg) {
+									console.log('something went wrong:'+errorMsg);
+								};
 				          	}
 				        },5000);
 			        }
